@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Tagesblatt</title>
+<meta name="description" content="Dein Tag auf einen Blick: Plan, Notizen, Projekte, neue Hörbücher & Podcasts, Events – jeden Tag mit eigenem Farbverlauf.">
+<meta name="theme-color" content="#e30613">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Tagesblatt">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="frame"><div class="frame-inner">
+
+  <div class="top">
+    <a class="brand" href="#heute">Tagesblatt</a>
+    <nav class="topnav" data-nav aria-label="Hauptnavigation"></nav>
+    <div class="tools">
+      <button class="tbtn" data-theme-btn title="Hell/Dunkel">Auto</button>
+      <a class="tbtn" href="#einstellungen" title="Einstellungen" aria-label="Einstellungen">⚙</a>
+    </div>
+  </div>
+
+  <main data-view><p class="empty">Lädt …</p></main>
+
+  <footer class="foot" data-foot></footer>
+</div></div>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<noscript><p style="padding:20px">Tagesblatt braucht JavaScript.</p></noscript>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
