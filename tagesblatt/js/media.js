@@ -61,24 +61,36 @@ async function audiobooksFor(f) {
   }));
 }
 
-/** Apple-Charts (RSS-Generator). Liefert [] wenn nicht erreichbar. */
+/** Apple-Charts über den iTunes-RSS-Feed. Der schickt eine CORS-Freigabe,
+    der neuere RSS-Generator (rss.applemarketingtools.com) nicht – den
+    blockiert der Browser. Fehler landen über settle() in den Hinweisen. */
 async function charts(kind) {
-  const path = kind === "podcast" ? "podcasts/top/15/podcasts.json" : "audio-books/top/15/audio-books.json";
-  const r = await fetch(`https://rss.applemarketingtools.com/api/v2/${land()}/${path}`);
+  const feed = kind === "podcast" ? "toppodcasts" : "topaudiobooks";
+  const r = await fetch(`https://itunes.apple.com/${land()}/rss/${feed}/limit=15/json`);
   if (!r.ok) throw new Error("Charts HTTP " + r.status);
   const j = await r.json();
-  return ((j.feed && j.feed.results) || []).map((x, i) => ({
-    id: (kind === "podcast" ? "cp:" : "cb:") + x.id,
-    typ: kind === "podcast" ? "podcast" : "hoerbuch",
-    platz: i + 1,
-    title: x.name,
-    sub: x.artistName,
-    autor: x.artistName,
-    show: kind === "podcast" ? x.name : undefined,
-    date: x.releaseDate || null,
-    artwork: art(x.artworkUrl100),
-    apple: x.url,
-  }));
+  let entries = (j.feed && j.feed.entry) || [];
+  if (!Array.isArray(entries)) entries = [entries]; // bei nur einem Eintrag kein Array
+  const lbl = (x) => (x && x.label) || "";
+  return entries.map((x, i) => {
+    const name = lbl(x["im:name"]);
+    const artist = lbl(x["im:artist"]);
+    const links = [].concat(x.link || []);
+    const alt = links.find((l) => l.attributes && l.attributes.rel === "alternate") || links[0];
+    const imgs = [].concat(x["im:image"] || []);
+    return {
+      id: (kind === "podcast" ? "cp:" : "cb:") + ((x.id && x.id.attributes && x.id.attributes["im:id"]) || i),
+      typ: kind === "podcast" ? "podcast" : "hoerbuch",
+      platz: i + 1,
+      title: name,
+      sub: artist,
+      autor: artist,
+      show: kind === "podcast" ? name : undefined,
+      date: lbl(x["im:releaseDate"]) || null,
+      artwork: art(lbl(imgs[imgs.length - 1])),
+      apple: (alt && alt.attributes && alt.attributes.href) || lbl(x.id),
+    };
+  });
 }
 
 /** Folgt-Einträge ohne ID (z. B. Vorschläge) einmal auflösen */

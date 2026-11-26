@@ -1,6 +1,6 @@
 /* Tagesblatt Service Worker – App läuft auch offline.
    Bei jeder Änderung an den Dateien VERSION hochzählen, damit Handys neu laden. */
-const VERSION = "tagesblatt-v1.1.0";
+const VERSION = "tagesblatt-v1.1.1";
 const SHELL = [
   "./", "index.html", "manifest.webmanifest", "css/style.css", "css/janzeinfach.woff2",
   "js/app.js", "js/config.js", "js/store.js", "js/util.js", "js/farbe.js", "js/themes.js",

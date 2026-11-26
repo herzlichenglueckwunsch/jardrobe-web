@@ -37,8 +37,13 @@ const ICS = ["BEGIN:VCALENDAR","VERSION:2.0","BEGIN:VEVENT","UID:t1",
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
   page.on('console', (m) => { if (m.type() === 'error' && !/fonts\.g|ERR_FAILED|net::/.test(m.text())) errors.push('console: ' + m.text()); });
   await ctx.route(/fonts\.(googleapis|gstatic)\.com/, (r) => r.abort());
-  await ctx.route(/itunes\.apple\.com/, (r) => r.fulfill({ contentType: 'text/javascript', body: itunes(r.request().url()) }));
-  await ctx.route(/rss\.applemarketingtools\.com/, (r) => r.fulfill({ contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify({ feed: { results: [{ id: '1', name: 'Chart-Podcast Eins', artistName: 'Sender', url: 'https://podcasts.apple.com/de/podcast/id1', artworkUrl100: '' }] } }) }));
+  // iTunes-RSS-Charts (gleiches Format wie der echte Feed: label-Objekte, link mal Objekt, mal Array)
+  const RSS = { feed: { entry: [{ 'im:name': { label: 'Chart-Podcast Eins' }, 'im:artist': { label: 'Sender' }, 'im:image': [{ label: '' }],
+    link: { attributes: { rel: 'alternate', href: 'https://podcasts.apple.com/de/podcast/id1' } }, id: { label: 'https://podcasts.apple.com/de/podcast/id1', attributes: { 'im:id': '1' } },
+    'im:releaseDate': { label: iso(now - day) } }] } };
+  await ctx.route(/itunes\.apple\.com/, (r) => /\/rss\//.test(r.request().url())
+    ? r.fulfill({ contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(RSS) })
+    : r.fulfill({ contentType: 'text/javascript', body: itunes(r.request().url()) }));
   await ctx.route(/cal\.example\.test/, (r) => r.fulfill({ contentType: 'text/calendar', headers: { 'access-control-allow-origin': '*' }, body: ICS }));
   await ctx.route(/blocked\.example\.test/, (r) => r.abort());
   const step = async (name, fn) => { try { await fn(); console.log('✓', name); } catch (e) { console.log('✗', name, '-', e.message.split('\n')[0]); errors.push(name); } };
@@ -196,7 +201,7 @@ const ICS = ["BEGIN:VCALENDAR","VERSION:2.0","BEGIN:VEVENT","UID:t1",
     }
   });
   const desk = await b.newPage({ viewport: { width: 1280, height: 900 } });
-  await desk.route(/fonts\.|itunes|rss\./, (r) => r.abort());
+  await desk.route(/fonts\.|itunes/, (r) => r.abort());
   await desk.goto(base); await desk.waitForSelector('.daycard'); await desk.waitForTimeout(300); await desk.screenshot({ path: OUT + '/6-desktop.png' });
   await desk.goto(base + 'vorschau.html'); await desk.waitForSelector('.tag'); await desk.screenshot({ path: OUT + '/7-vorschau.png' });
   console.log(errors.length ? 'FEHLER: ' + JSON.stringify(errors, null, 1) : 'KEINE FEHLER');
