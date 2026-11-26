@@ -1,10 +1,11 @@
 /* Tagesblatt Service Worker – App läuft auch offline.
    Bei jeder Änderung an den Dateien VERSION hochzählen, damit Handys neu laden. */
-const VERSION = "tagesblatt-v1.0.0";
+const VERSION = "tagesblatt-v1.1.0";
 const SHELL = [
   "./", "index.html", "manifest.webmanifest", "css/style.css", "css/janzeinfach.woff2",
-  "js/app.js", "js/config.js", "js/store.js", "js/util.js", "js/gradient.js",
+  "js/app.js", "js/config.js", "js/store.js", "js/util.js", "js/farbe.js", "js/themes.js",
   "js/ics.js", "js/media.js", "js/spotify.js", "js/data.js",
+  "themes/jardrobe/gradient.js", "themes/ausjestellt/gradient.js", "themes/ausjestellt/theme.css", "themes/ausjestellt/janz.woff2",
   "icons/icon.svg", "icons/icon-192.png", "icons/apple-touch-icon.png",
 ];
 

@@ -20,6 +20,7 @@ function seed() {
     events: [],         // eigene Events: { id, date, time, title, ort, kategorie, url }
     series: CONFIG.reihen.map((r) => ({ id: uid(), ...r })),
     prefs: {
+      skin: "ausjestellt",
       theme: "auto",
       land: CONFIG.land,
       proxyUrl: "",

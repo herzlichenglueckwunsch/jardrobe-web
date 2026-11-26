@@ -3,14 +3,14 @@
    ===================================================================== */
 import { CONFIG } from "./config.js";
 import { store } from "./store.js";
-import { gradientFor } from "./gradient.js";
+import { gradientFor, skin, skinId, SKINS } from "./themes.js";
 import * as U from "./util.js";
 import { eventToICS } from "./ics.js";
 import { loadMedia, searchPodcasts, links } from "./media.js";
 import * as SP from "./spotify.js";
 import * as DA from "./data.js";
 
-const VERSION = "1.0.0";
+const VERSION = "1.1.0";
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const D = () => store.data;
@@ -26,16 +26,20 @@ function isDark() {
 }
 function applyDay(k) {
   const g = gradientFor(k);
-  const dark = isDark();
+  const dark = skin().immerDunkel || isDark();
   const r = document.documentElement;
+  r.dataset.skin = skinId();
   r.dataset.theme = dark ? "dunkel" : "hell";
+  r.style.setProperty("--rahmen", g.rahmen || g.css);
+  r.style.setProperty("--leiste-a", g.leisteA || "#121212");
+  r.style.setProperty("--leiste-b", g.leisteB || "#121212");
   r.style.setProperty("--akzent", dark ? g.akzentDunkel : g.akzentHell);
   r.style.setProperty("--grad", g.css);
   r.style.setProperty("--tint", dark ? g.tintDunkel : g.tint);
   const meta = $('meta[name="theme-color"]');
   if (meta) meta.content = g.stops[0];
   const tb = $("[data-theme-btn]");
-  if (tb) tb.textContent = { auto: "Auto", hell: "Hell", dunkel: "Dunkel" }[D().prefs.theme] || "Auto";
+  if (tb) tb.textContent = skinId() === "jardrobe" ? `jardrobe${dark ? " ☾" : ""}` : SKINS[skinId()].label;
   return g;
 }
 
@@ -364,7 +368,8 @@ function viewSettings() {
   };
   return `<div class="pagehead"><h1>Einstellungen</h1></div><div class="grid">
     ${card("Darstellung & Region", `<form class="stack" data-form="basic">
-      <label class="lbl">Modus <select name="theme">${[["auto", "Automatisch (wie iPhone)"], ["hell", "Hell"], ["dunkel", "Dunkel"]].map(([v, l]) => `<option value="${v}" ${p.theme === v ? "selected" : ""}>${l}</option>`).join("")}</select></label>
+      <label class="lbl">Look <select name="skin">${Object.entries(SKINS).map(([id, x]) => `<option value="${id}" ${skinId() === id ? "selected" : ""}>${e(x.label)}</option>`).join("")}</select></label>
+      <label class="lbl">Hell/Dunkel (nur jardrobe-Look) <select name="theme">${[["auto", "Automatisch (wie iPhone)"], ["hell", "Hell"], ["dunkel", "Dunkel"]].map(([v, l]) => `<option value="${v}" ${p.theme === v ? "selected" : ""}>${l}</option>`).join("")}</select></label>
       <label class="lbl">Store-Land <select name="land">${["de", "at", "ch"].map((l) => `<option ${p.land === l ? "selected" : ""}>${l}</option>`).join("")}</select></label>
       <div class="row"><label class="lbl">Folgen „neu“ (Tage) <input type="number" min="1" max="60" name="folgenTage" value="${p.folgenTage}"></label>
       <label class="lbl">Hörbücher „neu“ (Tage) <input type="number" min="7" max="365" name="hoerbuchTage" value="${p.hoerbuchTage}"></label></div>
@@ -557,7 +562,7 @@ const FORMS = {
   },
   basic: (f, fd) => {
     const p = D().prefs, oldLand = p.land;
-    p.theme = fd.get("theme"); p.land = fd.get("land");
+    p.theme = fd.get("theme"); p.skin = fd.get("skin"); p.land = fd.get("land");
     p.folgenTage = Math.max(1, +fd.get("folgenTage") || 14); p.hoerbuchTage = Math.max(7, +fd.get("hoerbuchTage") || 120);
     delete store.cache.media; if (oldLand !== p.land) delete store.cache.spotify; store.saveCache();
     save(); render(); toast("Gespeichert ✓");
@@ -601,9 +606,12 @@ document.addEventListener("change", (ev) => {
     t.files[0].text().then((txt) => { store.importJSON(txt); render(); toast("Backup geladen ✓"); }).catch((err) => toast("Import fehlgeschlagen: " + err.message, 5000));
   }
 });
+// Knopf oben: ausjestellt -> jardrobe hell -> jardrobe dunkel -> ausjestellt
 $("[data-theme-btn]").addEventListener("click", () => {
-  const order = ["auto", "hell", "dunkel"];
-  D().prefs.theme = order[(order.indexOf(D().prefs.theme) + 1) % order.length];
+  const p = D().prefs;
+  const stufen = [["ausjestellt", p.theme], ["jardrobe", "hell"], ["jardrobe", "dunkel"]];
+  const jetzt = skinId() === "ausjestellt" ? 0 : isDark() ? 2 : 1;
+  [p.skin, p.theme] = stufen[(jetzt + 1) % stufen.length];
   save(); render();
 });
 matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => render());

@@ -1,8 +1,11 @@
 # Tagesblatt – dein Tag auf einen Blick
 
-Web-App im jardrobe-Look (Doppelrahmen, harte Schatten, JanzEinfach + Bebas Neue).
 **Jeder Tag hat seinen eigenen Farbverlauf**: gleiches Datum = gleicher Verlauf, auf jedem Gerät.
-Rahmen, Buttons und Akzente nehmen die Farbe des Tages an (immer mit lesbarem Kontrast).
+Zwei Looks (oben über den Knopf oder in den Einstellungen umschaltbar):
+- **ausjestellt** (Standard): Verlauf als ganzer Hintergrund, schwarze Tafeln, Janz + Space Mono → `themes/ausjestellt/`
+- **jardrobe**: Doppelrahmen, harte Schatten, Verlaufskarte, hell oder dunkel → `themes/jardrobe/` + `css/style.css`
+
+Eigenes Theme anlegen: Anleitung oben in `js/themes.js`. Verläufe ansehen: `vorschau.html`.
 
 ## Was drin ist
 | Bereich | Was es kann |
@@ -50,6 +53,7 @@ Die App ist eine PWA, also schon so gebaut, dass man sie mit **Capacitor** in ei
 index.html  manifest.webmanifest  sw.js  ics-proxy.php
 css/style.css  css/janzeinfach.woff2
 js/app.js (Ansichten) · data.js (Plan/Events/Vorschläge) · ics.js (Kalender-Parser)
-js/media.js (Apple) · spotify.js · gradient.js (Tagesverlauf) · store.js · util.js · config.js
-icons/
+js/media.js (Apple) · spotify.js · themes.js (Looks) · farbe.js · store.js · util.js · config.js
+themes/ausjestellt/ (gradient.js, theme.css, janz.woff2) · themes/jardrobe/gradient.js
+vorschau.html (Verlauf-Vorschau zum Bearbeiten) · icons/
 ```
