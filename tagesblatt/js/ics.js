@@ -196,7 +196,7 @@ export function eventToICS({ title, start, end, location = "", url = "", descrip
   const f = (d) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   const e = (s) => String(s).replace(/[\\,;]/g, (c) => "\\" + c).replace(/\n/g, "\\n");
   return [
-    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Tagesblatt//DE", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//juten Tach!//DE", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
     `UID:${Date.now()}-${Math.random().toString(36).slice(2)}@tagesblatt`,
     `DTSTAMP:${f(new Date())}`, `DTSTART:${f(start)}`, `DTEND:${f(end || new Date(+start + 3 * 3600000))}`,
     `SUMMARY:${e(title)}`, location && `LOCATION:${e(location)}`, url && `URL:${url}`, description && `DESCRIPTION:${e(description)}`,

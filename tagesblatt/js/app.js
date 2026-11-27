@@ -388,7 +388,7 @@ function viewSettings() {
         <p>Die Links bleiben nur auf diesem Gerät gespeichert. Wer den Link kennt, kann den Kalender lesen – also nicht teilen.</p>
       </details>`, "span2")}
     ${card("Proxy für Kalender-Links", `<p class="hint">Apple & Google erlauben Browsern nicht, Kalender direkt von fremden Seiten abzurufen (CORS). Lade dafür die Datei <code>ics-proxy.php</code> mit auf deinen Webspace und trag hier ihre Adresse ein.</p>
-      <form class="row" data-form="proxy"><input name="proxyUrl" placeholder="https://deine-domain.de/tagesblatt/ics-proxy.php" value="${e(p.proxyUrl)}"><button class="btn">OK</button></form>`)}
+      <form class="row" data-form="proxy"><input name="proxyUrl" placeholder="https://deine-domain.de/jutentach/ics-proxy.php" value="${e(p.proxyUrl)}"><button class="btn">OK</button></form>`)}
     ${card("Spotify-Abgleich", `<p class="hint">Optional. Auf <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com</a> eine App anlegen (Web API), als Redirect-URI genau das eintragen:</p>
       <p><code class="copy" data-act="copy" data-text="${e(SP.redirectUri())}">${e(SP.redirectUri())}</code></p>
       <form class="row" data-form="spotify"><input name="spotifyClientId" placeholder="Client-ID" value="${e(p.spotifyClientId)}" autocomplete="off"><button class="btn">OK</button></form>
@@ -397,7 +397,7 @@ function viewSettings() {
     ${card("Sichern & Umziehen", `<p class="hint">Alles liegt nur auf diesem Gerät. Mach ab und zu ein Backup (z. B. in iCloud Drive).</p>
       <div class="row"><button class="btn" data-act="export">Backup speichern</button><label class="btn ghost">Backup laden<input type="file" accept="application/json,.json" data-import hidden></label></div>
       <p><button class="btn sm ghost danger" data-act="reset">Alles zurücksetzen</button></p>
-      <p class="hint">Tagesblatt ${VERSION}</p>`)}
+      <p class="hint">juten Tach! ${VERSION}</p>`)}
   </div>`;
 }
 
@@ -481,7 +481,7 @@ const ACT = {
   },
   evIcs: (el) => {
     const ev = findEvent(el.dataset.ev); if (!ev) return;
-    download(`${U.norm(ev.title).replace(/ /g, "-") || "event"}.ics`, eventToICS({ title: ev.title, start: ev.start, end: ev.end, location: ev.location, url: U.safeUrl(ev.url), description: "Aus dem Tagesblatt" }), "text/calendar");
+    download(`${U.norm(ev.title).replace(/ /g, "-") || "event"}.ics`, eventToICS({ title: ev.title, start: ev.start, end: ev.end, location: ev.location, url: U.safeUrl(ev.url), description: "Aus juten Tach!" }), "text/calendar");
   },
   mediaReload: async () => { toast("Lade …"); try { await loadMedia(true); await DA.loadFeeds(true); render(); toast("Aktualisiert ✓"); } catch (err) { toast(err.message); } },
   unfollow: (el) => { D().follows = D().follows.filter((f) => f.id !== el.dataset.id); save(); delete store.cache.media; store.saveCache(); render(); },
@@ -504,7 +504,7 @@ const ACT = {
   spConnect: () => SP.connect().catch((err) => toast(err.message)),
   spDisconnect: () => { SP.disconnect(); render(); },
   copy: (el) => { navigator.clipboard?.writeText(el.dataset.text).then(() => toast("Kopiert ✓"), () => toast("Bitte manuell kopieren")); },
-  export: () => download(`tagesblatt-backup-${U.todayKey()}.json`, store.exportJSON(), "application/json"),
+  export: () => download(`juten-tach-backup-${U.todayKey()}.json`, store.exportJSON(), "application/json"),
   reset: () => { if (confirm("Wirklich ALLES löschen (Notizen, Projekte, Feeds …)?")) { store.reset(); SP.disconnect(); render(); toast("Zurückgesetzt"); } },
 };
 

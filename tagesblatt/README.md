@@ -1,4 +1,6 @@
-# Tagesblatt – dein Tag auf einen Blick
+# juten Tach! – dein Tag auf einen Blick
+
+(Im Repo liegt die App im Ordner `tagesblatt/` – das war der Arbeitstitel.)
 
 **Jeder Tag hat seinen eigenen Farbverlauf**: gleiches Datum = gleicher Verlauf, auf jedem Gerät.
 Zwei Looks (oben über den Knopf oder in den Einstellungen umschaltbar):
@@ -20,7 +22,7 @@ Eigenes Theme anlegen: Anleitung oben in `js/themes.js`. Verläufe ansehen: `vor
 Alle Daten bleiben **nur auf dem Gerät** (localStorage). Für den Umzug auf ein anderes Gerät: Backup speichern und dort laden.
 
 ## Hochladen (wie beim Shop)
-1. Ordner `tagesblatt/` per FileZilla z. B. nach `public_html/tagesblatt/` hochladen.
+1. Ordner `tagesblatt/` per FileZilla z. B. nach `public_html/jutentach/` hochladen.
 2. Auf dem iPhone in **Safari** öffnen → Teilen → **„Zum Home-Bildschirm“**. Danach startet sie wie eine App (auch offline).
 3. HTTPS muss aktiv sein (für Offline-Modus und Spotify).
 
@@ -32,7 +34,7 @@ Eine Web-App darf **nicht direkt** auf den iPhone-Kalender oder Apple **Erinneru
 - Google: Einstellungen → Kalender → „Privatadresse im iCal-Format“
 - In der App: Einstellungen → Kalender & Event-Feeds → einfügen.
 
-Browser blockieren solche Links meist (CORS). Dafür liegt `ics-proxy.php` bei: einfach mit hochladen und die Adresse (z. B. `https://jardrobe.de/tagesblatt/ics-proxy.php`) unter „Proxy“ eintragen. Der Proxy lädt **nur** von freigegebenen Anbietern (Liste oben in der Datei, eigene Club-Domains dort ergänzen). Braucht PHP mit curl, das haben fast alle Webhoster.
+Browser blockieren solche Links meist (CORS). Dafür liegt `ics-proxy.php` bei: einfach mit hochladen und die Adresse (z. B. `https://deine-domain.de/jutentach/ics-proxy.php`) unter „Proxy“ eintragen. Der Proxy lädt **nur** von freigegebenen Anbietern (Liste oben in der Datei, eigene Club-Domains dort ergänzen). Braucht PHP mit curl, das haben fast alle Webhoster.
 
 ## Hörbücher & Podcasts
 - **Apple**: offizielle iTunes-Such-API + Apple-Charts, ohne Schlüssel. Wird **einmal pro Tag** beim Öffnen neu geladen (oder per „aktualisieren“).

@@ -1,6 +1,6 @@
 <?php
 /* =====================================================================
-   TAGESBLATT – Kalender-Proxy
+   JUTEN TACH! – Kalender-Proxy
    Holt einen ICS-Kalender (Apple/Google/Outlook/Meetup …) und gibt ihn an
    die App weiter. Nötig, weil Browser fremde Kalender wegen CORS nicht
    direkt laden dürfen.
@@ -54,7 +54,7 @@ for ($hop = 0; $hop < 4; $hop++) {
     CURLOPT_CONNECTTIMEOUT => 8,
     CURLOPT_TIMEOUT => 20,
     CURLOPT_PROTOCOLS => CURLPROTO_HTTPS,
-    CURLOPT_USERAGENT => 'Tagesblatt-ICS/1.0',
+    CURLOPT_USERAGENT => 'jutenTach-ICS/1.0',
     CURLOPT_HTTPHEADER => ['Accept: text/calendar, text/plain;q=0.9, */*;q=0.5'],
     CURLOPT_WRITEFUNCTION => function ($ch, $chunk) use (&$body, $MAX_BYTES) {
       $body .= $chunk;

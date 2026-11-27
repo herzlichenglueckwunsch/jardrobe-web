@@ -3,7 +3,7 @@
 | Was | Wo |
 |---|---|
 | jardrobe Shop (Original-Upload) | `jardrobe seite.zip` |
-| **Tagesblatt** – Tages-App (Plan, Notizen, Projekte, Hörbücher/Podcasts, Events) | `tagesblatt/` → Details in [`tagesblatt/README.md`](tagesblatt/README.md) |
+| **juten Tach!** (Arbeitstitel Tagesblatt) – Tages-App (Plan, Notizen, Projekte, Hörbücher/Podcasts, Events) | `tagesblatt/` → Details in [`tagesblatt/README.md`](tagesblatt/README.md) |
 | Dev-Server, Tests | `tools/`, `tests/`, `package.json` |
 
 ## Am Rechner weiterarbeiten
@@ -28,6 +28,6 @@ Dann Dateien in `tagesblatt/` ändern und den Browser neu laden. Ein Build-Schri
 | `npm run test:browser` | klickt die ganze App im Browser durch und speichert Screenshots in `tests/screenshots/` |
 | `npm run zip` | packt `tagesblatt/` als `tagesblatt-upload.zip` zum Hochladen |
 
-**Veröffentlichen:** den Inhalt von `tagesblatt/` per FileZilla auf den Webspace laden (z. B. `public_html/tagesblatt/`). Vorher in `tagesblatt/sw.js` die `VERSION` hochzählen, sonst zeigt das Handy noch die alte Version aus dem Cache.
+**Veröffentlichen:** den Inhalt von `tagesblatt/` per FileZilla auf den Webspace laden (z. B. `public_html/jutentach/`). Vorher in `tagesblatt/sw.js` die `VERSION` hochzählen, sonst zeigt das Handy noch die alte Version aus dem Cache.
 
 **Mit Claude weitermachen:** Repo in Claude Code öffnen. Die Datei `CLAUDE.md` erklärt Claude den Aufbau.

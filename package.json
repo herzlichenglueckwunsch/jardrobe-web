@@ -1,7 +1,7 @@
 {
   "name": "jardrobe-web",
   "private": true,
-  "description": "jardrobe Shop (Zip) + Tagesblatt Web-App",
+  "description": "jardrobe Shop (Zip) + juten Tach! Web-App (Ordner tagesblatt/)",
   "type": "module",
   "scripts": {
     "dev": "node tools/dev-server.mjs",

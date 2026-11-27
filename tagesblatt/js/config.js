@@ -1,10 +1,10 @@
 /* =====================================================================
-   TAGESBLATT – STARTWERTE
+   JUTEN TACH! – STARTWERTE
    Alles hier wird nur beim ALLERERSTEN Öffnen übernommen.
    Danach änderst du alles direkt in der App (wird auf dem Gerät gespeichert).
    ===================================================================== */
 export const CONFIG = {
-  appName: "Tagesblatt",
+  appName: "juten Tach!",
   land: "de",            // Store-Land für Apple/Spotify (de, at, ch …)
 
   // Event-Präferenzen (in der App unter "Events" änderbar)

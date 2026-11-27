@@ -1,7 +1,7 @@
 # jardrobe-web – Hinweise für Claude
 
 - Sprache: Deutsch (Code-Kommentare, UI, Commits). Nutzer arbeitet oft vom Handy, teils vom Rechner.
-- `tagesblatt/` = statische PWA ohne Build (ES-Module, Vanilla JS). Wird per FileZilla auf Shared Hosting geladen → keine Node-Abhängigkeiten zur Laufzeit, nur `ics-proxy.php` serverseitig.
+- `tagesblatt/` = App „juten Tach!“ (Arbeitstitel Tagesblatt; Ordner und interne Speicher-Schlüssel `tagesblatt_*` bleiben so, sonst gehen Daten verloren), statische PWA ohne Build (ES-Module, Vanilla JS). Wird per FileZilla auf Shared Hosting geladen → keine Node-Abhängigkeiten zur Laufzeit, nur `ics-proxy.php` serverseitig.
 - Looks/Themes: `js/themes.js` (Registry), `themes/<name>/gradient.js` (Tagesverlauf, deterministisch pro Datum), `themes/<name>/theme.css` (Regeln unter `:root[data-skin="<name>"]`). Basis-Layout + jardrobe-Look: `css/style.css`. Standard-Look: ausjestellt.
 - Daten: nur localStorage (`js/store.js`), Backup per JSON. Neue Felder in `seed()` ergänzen – `migrate()` füllt sie bei Bestandsdaten auf.
 - Alle Nutzer-/API-Strings beim Rendern mit `esc()` escapen, Links mit `safeUrl()`.

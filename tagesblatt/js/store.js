@@ -62,7 +62,7 @@ export const store = {
   importJSON(text) {
     const obj = JSON.parse(text);
     const d = obj && obj.app === "tagesblatt" ? obj.data : null;
-    if (!d || typeof d !== "object") throw new Error("Keine Tagesblatt-Sicherung");
+    if (!d || typeof d !== "object") throw new Error("Keine Sicherung von juten Tach!");
     this.data = migrate(d);
     this.save();
   },

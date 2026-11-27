@@ -29,7 +29,7 @@ export function startServer(port = Number(process.env.PORT) || 8080, { quiet = f
   });
   return new Promise((resolve) => server.listen(port, () => {
     if (!quiet) {
-      console.log(`\n  Tagesblatt läuft:   http://localhost:${port}`);
+      console.log(`\n  juten Tach! läuft:  http://localhost:${port}`);
       console.log(`  Verlauf-Vorschau:   http://localhost:${port}/vorschau.html`);
       for (const n of Object.values(os.networkInterfaces()).flat()) {
         if (n && n.family === "IPv4" && !n.internal) console.log(`  Im WLAN (Handy):    http://${n.address}:${port}`);
