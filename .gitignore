@@ -1,0 +1,5 @@
+node_modules/
+tests/screenshots/
+tagesblatt-upload.zip
+.DS_Store
+tagesblatt/sync-daten/

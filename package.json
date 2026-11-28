@@ -1,0 +1,16 @@
+{
+  "name": "jardrobe-web",
+  "private": true,
+  "description": "jardrobe Shop (Zip) + juten Tach! Web-App (Ordner tagesblatt/)",
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/dev-server.mjs",
+    "test": "node tests/logic.test.mjs",
+    "test:browser": "node tests/browser.test.cjs",
+    "test:sync": "node tests/sync.test.cjs",
+    "zip": "cd tagesblatt && zip -qr ../tagesblatt-upload.zip . -x '*.DS_Store' && echo 'tagesblatt-upload.zip erstellt'"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

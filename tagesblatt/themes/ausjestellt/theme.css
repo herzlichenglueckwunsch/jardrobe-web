@@ -1,0 +1,153 @@
+/* =====================================================================
+   THEME "ausjestellt"
+   Anlehnung an ausjestellt.de: Seite = Tagesverlauf (vollflächig),
+   schwarze "Tafeln" mit 1px-Verlaufsrahmen, graue Zeilen, weiße Leisten,
+   Janz-Handschrift + Space Mono. Keine Schatten, keine Rundungen.
+   Alles hier gilt nur, wenn <html data-skin="ausjestellt"> gesetzt ist.
+   ===================================================================== */
+@font-face { font-family: "Janz"; src: url("janz.woff2") format("woff2"); font-display: swap;
+  unicode-range: U+20-2B, U+2D, U+2F-10FFFF; } /* Punkt & Komma sind in Janz winzig -> kommen aus Comic */
+
+:root[data-skin="ausjestellt"] {
+  --hand: "Janz", "Comic Neue", "Comic Sans MS", cursive;
+  --mono: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  --weiss: #f6f6f6; --grau: #d1d1d1; --strich: #ededed;
+  --bg: #000000; --text: var(--weiss); --muted: #9a9a9a; --card: #000000; --shadow: transparent; --line: #2c2c2c;
+  --on-akzent: #000000; --ok: #3aaa35; --no: #ff4d5a;
+}
+:root[data-skin="ausjestellt"] { background: #000; }
+:root[data-skin="ausjestellt"] body {
+  font-family: var(--mono); font-size: 14px; background: transparent; /* sonst deckt es den Verlauf ab */
+}
+/* Verlauf liegt fest hinter allem (wie auf ausjestellt.de) */
+:root[data-skin="ausjestellt"] body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; background: var(--grad);
+}
+:root[data-skin="ausjestellt"] h1,
+:root[data-skin="ausjestellt"] h2,
+:root[data-skin="ausjestellt"] h3,
+:root[data-skin="ausjestellt"] .hand,
+:root[data-skin="ausjestellt"] .btn,
+:root[data-skin="ausjestellt"] .tbtn,
+:root[data-skin="ausjestellt"] .topnav a,
+:root[data-skin="ausjestellt"] .chip,
+:root[data-skin="ausjestellt"] .badge { font-family: var(--hand); font-weight: 400; letter-spacing: 0; }
+
+/* Rahmen: statt Doppelrahmen ein dünner Verlaufsrahmen */
+:root[data-skin="ausjestellt"] .frame { border: none; padding: 0; }
+:root[data-skin="ausjestellt"] .frame-inner { border: none; padding: 6px 4px; }
+
+/* Kopfzeile: weiße Leiste */
+:root[data-skin="ausjestellt"] .top { background: var(--weiss); padding: 8px 12px; margin-bottom: 18px; }
+:root[data-skin="ausjestellt"] .brand { font-family: var(--hand); font-size: 34px; color: var(--leiste-a); transform: none; text-shadow: none; -webkit-text-stroke: 1px var(--leiste-a); }
+:root[data-skin="ausjestellt"] .topnav a { color: #000; font-size: 22px; }
+:root[data-skin="ausjestellt"] .topnav a.active { color: var(--leiste-a); }
+:root[data-skin="ausjestellt"] .tbtn { background: #000; color: var(--weiss); border: 1px solid #555; font-size: 18px; }
+:root[data-skin="ausjestellt"] .tbtn:hover { color: var(--akzent); background: #000; }
+
+/* Tageskarte: Datum auf weißer Leiste, kein Kasten */
+:root[data-skin="ausjestellt"] .daycard { background: none; border: none; box-shadow: none; padding: 6px 40px 10px; color: var(--weiss); margin-bottom: 18px; }
+:root[data-skin="ausjestellt"] .daycard::after { display: none; }
+:root[data-skin="ausjestellt"] .dc-top { font-size: 26px; text-shadow: 0 1px 0 #000; }
+:root[data-skin="ausjestellt"] .dc-num { font-family: var(--mono); color: var(--weiss); opacity: .8; font-size: 12px; }
+:root[data-skin="ausjestellt"] .dc-date {
+  display: inline-block; background: var(--weiss); color: var(--leiste-a); font-family: var(--hand);
+  -webkit-text-stroke: 2px var(--leiste-a); padding: .08em .25em 0; line-height: 1; margin: 10px 0 8px;
+  font-size: clamp(46px, 14vw, 112px);
+}
+:root[data-skin="ausjestellt"] .dc-name {
+  display: inline-block; background: var(--weiss); color: var(--leiste-b); -webkit-text-stroke: 1px var(--leiste-b);
+  padding: .05em .4em; font-size: clamp(22px, 6vw, 34px);
+}
+:root[data-skin="ausjestellt"] .dc-sum { font-family: var(--mono); font-weight: 400; color: var(--weiss); background: #000; display: inline-block; padding: 2px 8px; margin-top: 10px; }
+:root[data-skin="ausjestellt"] .dc-arrow { color: var(--weiss); opacity: .9; text-shadow: 0 0 6px #000; }
+
+/* Tafeln (Karten): schwarz mit 1px Verlaufsrahmen */
+:root[data-skin="ausjestellt"] .card {
+  background: #000; box-shadow: none; border: 1px solid; border-image: var(--rahmen) 1; padding: 16px 18px;
+}
+:root[data-skin="ausjestellt"] .ctitle { color: var(--weiss); font-size: clamp(30px, 8vw, 40px); }
+:root[data-skin="ausjestellt"] .pagehead h1 {
+  display: inline-block; background: var(--weiss); color: var(--leiste-a); -webkit-text-stroke: 1.5px var(--leiste-a);
+  padding: .08em .3em 0; font-size: clamp(40px, 11vw, 70px);
+}
+
+/* Knöpfe: schwarz, weiße Handschrift, grauer Strich */
+:root[data-skin="ausjestellt"] .btn { background: #000; color: var(--weiss); border: 1px solid #555; font-size: 22px; padding: .25em .6em .2em; }
+:root[data-skin="ausjestellt"] .btn:hover { color: var(--akzent); filter: none; }
+:root[data-skin="ausjestellt"] .btn.ghost { background: transparent; color: var(--grau); }
+:root[data-skin="ausjestellt"] .btn.sm { font-size: 18px; }
+
+/* Felder */
+:root[data-skin="ausjestellt"] input,
+:root[data-skin="ausjestellt"] select,
+:root[data-skin="ausjestellt"] textarea { background: none; border: 1px solid var(--strich); color: var(--weiss); font-family: var(--mono); }
+:root[data-skin="ausjestellt"] select option { background: #000; }
+:root[data-skin="ausjestellt"] .note { background: none; border-color: var(--strich); }
+:root[data-skin="ausjestellt"] .lbl { color: var(--grau); font-family: var(--hand); font-size: 19px; font-weight: 400; }
+
+/* Listen = graue Zeilenbalken mit schwarzer Schrift */
+:root[data-skin="ausjestellt"] .pl,
+:root[data-skin="ausjestellt"] .ev,
+:root[data-skin="ausjestellt"] .sug li,
+:root[data-skin="ausjestellt"] .plist li,
+:root[data-skin="ausjestellt"] .uplist li {
+  background: var(--grau); color: #000; border: none; margin-bottom: 7px; padding: 7px 10px;
+}
+:root[data-skin="ausjestellt"] .pl.cal { background: var(--weiss); }
+:root[data-skin="ausjestellt"] .pl .pt,
+:root[data-skin="ausjestellt"] .ev-when { color: #000; font-family: var(--hand); font-size: 22px; }
+:root[data-skin="ausjestellt"] .pl .px,
+:root[data-skin="ausjestellt"] .ev-main,
+:root[data-skin="ausjestellt"] .sug b,
+:root[data-skin="ausjestellt"] .plist b { color: #000; font-family: var(--hand); font-size: 20px; font-weight: 400; line-height: 1.1; }
+:root[data-skin="ausjestellt"] .px small,
+:root[data-skin="ausjestellt"] .psrc,
+:root[data-skin="ausjestellt"] .ev-main small,
+:root[data-skin="ausjestellt"] .sug .why,
+:root[data-skin="ausjestellt"] .sug .next,
+:root[data-skin="ausjestellt"] .plist small,
+:root[data-skin="ausjestellt"] .plist .next,
+:root[data-skin="ausjestellt"] .nsnip { color: #333; font-family: var(--mono); font-size: 12px; }
+:root[data-skin="ausjestellt"] .uplist a { color: #000; }
+:root[data-skin="ausjestellt"] .uplist b { color: #000; }
+:root[data-skin="ausjestellt"] .pl.done label { color: #666; }
+:root[data-skin="ausjestellt"] .x { color: #000; }
+:root[data-skin="ausjestellt"] .pl .btn,
+:root[data-skin="ausjestellt"] .ev .btn,
+:root[data-skin="ausjestellt"] .sug .btn,
+:root[data-skin="ausjestellt"] .plist .btn { background: #000; color: var(--weiss); border-color: #000; }
+:root[data-skin="ausjestellt"] .empty { font-family: var(--hand); font-size: 22px; color: #777; }
+:root[data-skin="ausjestellt"] .hint { font-family: var(--mono); font-size: 12.5px; color: #9a9a9a; }
+:root[data-skin="ausjestellt"] .more { font-family: var(--hand); font-weight: 400; font-size: 22px; }
+:root[data-skin="ausjestellt"] .dayhead { color: var(--weiss); font-size: 26px; }
+
+/* Chips & Pillen */
+:root[data-skin="ausjestellt"] .chip { border: 1px solid #555; color: var(--weiss); font-size: 19px; }
+:root[data-skin="ausjestellt"] .chip.on { background: var(--weiss); color: #000; border-color: var(--weiss); }
+:root[data-skin="ausjestellt"] .pill { font-family: var(--mono); font-weight: 400; }
+:root[data-skin="ausjestellt"] .badge { background: var(--weiss); color: #000; }
+:root[data-skin="ausjestellt"] .badge.ghost { background: none; color: var(--weiss); border-color: #555; }
+
+/* Medien */
+:root[data-skin="ausjestellt"] .mitem { background: #000; border: 1px solid #333; }
+:root[data-skin="ausjestellt"] .mitem img,
+:root[data-skin="ausjestellt"] .noart { border: 1px solid #555; }
+:root[data-skin="ausjestellt"] .mtitle { font-family: var(--hand); font-weight: 400; font-size: 20px; line-height: 1.05; }
+:root[data-skin="ausjestellt"] .picklist button { background: var(--grau); color: #000; border: none; }
+
+/* Monatskalender: Zahl auf weißer Leiste, damit sie auf jedem Verlauf lesbar ist */
+:root[data-skin="ausjestellt"] .mhead { color: var(--weiss); font-family: var(--hand); font-size: 20px; }
+:root[data-skin="ausjestellt"] .mcell { border: 1px solid #555; }
+:root[data-skin="ausjestellt"] .mcell.blank { border: none; }
+:root[data-skin="ausjestellt"] .mnum { align-self: flex-start; background: var(--weiss); color: #000; font-family: var(--hand); padding: 0 .2em; font-size: clamp(16px, 4.6vw, 26px); }
+:root[data-skin="ausjestellt"] .mcell.today { outline: 2px solid var(--weiss); box-shadow: none; }
+
+/* Footer & Toast */
+:root[data-skin="ausjestellt"] .foot { color: var(--weiss); text-shadow: 0 1px 2px #000; font-family: var(--mono); }
+:root[data-skin="ausjestellt"] .foot .hand { color: var(--weiss); font-size: 20px; }
+:root[data-skin="ausjestellt"] .toast { background: #000; color: var(--weiss); border: 1px solid; border-image: var(--rahmen) 1; box-shadow: none; font-family: var(--hand); font-size: 20px; font-weight: 400; }
+:root[data-skin="ausjestellt"] code { background: #1a1a1a; color: var(--weiss); }
+/* :where() = ohne Gewicht, damit speziellere Regeln (Menü, Listen) gewinnen */
+:root[data-skin="ausjestellt"] details.mini-details summary,
+:root[data-skin="ausjestellt"] :where(a:not([class])) { color: var(--akzent); }
