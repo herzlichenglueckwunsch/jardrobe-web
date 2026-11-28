@@ -52,7 +52,8 @@ function migrate(d) {
 export const store = {
   data: migrate(read(KEY, seed)),
   cache: read(CKEY, () => ({})),
-  save() { return write(KEY, this.data); },
+  onSave: null, // wird von sync.js gesetzt (Änderungen mitschreiben)
+  save() { const ok = write(KEY, this.data); if (ok && this.onSave) this.onSave(); return ok; },
   saveCache() {
     if (!write(CKEY, this.cache)) { this.cache = {}; write(CKEY, this.cache); }
   },

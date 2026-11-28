@@ -28,6 +28,7 @@ body{
 a{ color:var(--akzent); text-decoration:none; }
 a:hover{ text-decoration:underline; }
 img{ max-width:100%; display:block; }
+code.synccode{ word-break:normal; overflow-wrap:anywhere; display:inline-block; font-size:17px; letter-spacing:.06em; padding:6px 10px; cursor:pointer; }
 code{ font-family:ui-monospace,Menlo,monospace; font-size:12px; word-break:break-all; background:var(--tint); padding:2px 5px; }
 h1,h2,h3,.display{ font-family:"Bebas Neue",Impact,"Arial Narrow",sans-serif; font-weight:400; letter-spacing:.02em; line-height:.98; }
 .hand{ font-family:"JanzEinfach",cursive; font-weight:700; }
@@ -91,6 +92,7 @@ textarea{ resize:vertical; line-height:1.5; }
 .row > input, .row > select{ flex:1 1 120px; }
 .row > .btn{ flex:0 0 auto; }
 .stack{ display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.stack > .lbl{ flex:0 0 auto; } /* in Spalten sonst 140px hoch */
 .lbl{ display:flex; flex-direction:column; gap:3px; flex:1 1 140px; font-size:15px; color:var(--akzent); font-weight:700; }
 .check{ display:flex; gap:8px; align-items:center; font-size:15px; }
 .btn{ font-family:"Bebas Neue",Impact,sans-serif; font-size:20px; letter-spacing:.06em; background:var(--akzent); color:var(--on-akzent); border:2px solid var(--akzent); padding:6px 14px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:1.1; }

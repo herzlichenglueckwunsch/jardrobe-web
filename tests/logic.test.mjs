@@ -130,4 +130,36 @@ ok(eventToICS({ title: "x", start: new Date(Date.UTC(2026,10,28,22,0)) }).includ
 // util
 ok(U.similarity("Hotel Matze", "Hotel Matze") === 1 && U.similarity("Der Schwarm (ungekürzt)", "Der Schwarm") === 1, "similarity");
 console.log(fails ? `\n${fails} FEHLER` : "\nALLE LOGIK-TESTS OK");
-process.exit(fails ? 1 : 0);
+if (fails) process.exitCode = 1;
+
+// ===================== Sync: Zusammenführen =====================
+{
+  const S = await import("../tagesblatt/js/sync.js");
+  let f = 0; const ok2 = (c, m) => { if (!c) { f++; console.log("FAIL sync:", m); } };
+  const basis = { notes: {}, prefs: { stadt: "Berlin" }, tasks: [], projects: [{ id: "p1", name: "A" }, { id: "p2", name: "B" }], follows: [], feeds: [], events: [], series: [], meta: { x: 1 } };
+  const m = S.flach(basis);
+  const zurueck = S.aufbauen(m, basis);
+  ok2(JSON.stringify(zurueck.projects) === JSON.stringify(basis.projects) && zurueck.meta.x === 1, "flach/aufbauen verlustfrei, meta bleibt");
+  const leer = { items: {}, stamps: {}, deleted: {} };
+  const N = Date.now() - 10000; // realistische Zeitstempel (alte Grabsteine würden sonst aufgeräumt)
+  // A ändert p1 später als B, B legt neue Notiz an, A löscht p2 nach B's Änderung
+  const A = { items: { "projects:p1": '{"id":"p1","name":"A neu"}', "prefs:stadt": '"Berlin"' }, stamps: { "projects:p1": N + 300, "prefs:stadt": N + 100 }, deleted: { "projects:p2": N + 250 } };
+  const B = { items: { "projects:p1": '{"id":"p1","name":"A alt"}', "projects:p2": '{"id":"p2","name":"B2"}', "notes:2026-11-28": '"Hallo"', "prefs:stadt": '"Hamburg"' }, stamps: { "projects:p1": N + 200, "projects:p2": N + 200, "notes:2026-11-28": N + 210, "prefs:stadt": N + 150 }, deleted: {} };
+  const ab = S.zusammenfuehren(A, B), ba = S.zusammenfuehren(B, A);
+  ok2(ab.items["projects:p1"].includes("A neu"), "jüngere Änderung gewinnt");
+  ok2(!ab.items["projects:p2"] && ab.deleted["projects:p2"] === N + 250, "jüngeres Löschen gewinnt");
+  ok2(ab.items["notes:2026-11-28"] === '"Hallo"', "neue Notiz vom anderen Gerät kommt an");
+  ok2(ab.items["prefs:stadt"] === '"Hamburg"', "Einstellung: jüngere gewinnt");
+  ok2(JSON.stringify(ab) === JSON.stringify(S.zusammenfuehren(ba, leer)) || JSON.stringify(Object.entries(ab.items).sort()) === JSON.stringify(Object.entries(ba.items).sort()), "Reihenfolge egal (A+B = B+A)");
+  // Wiederauferstehung: Änderung NACH dem Löschen gewinnt
+  const C = { items: { "projects:p2": '{"id":"p2","name":"wieder da"}' }, stamps: { "projects:p2": N + 400 }, deleted: {} };
+  ok2(S.zusammenfuehren(ab, C).items["projects:p2"], "Bearbeiten nach Löschen gewinnt");
+  // Gleichstand: beide Richtungen gleiches Ergebnis
+  const T1 = { items: { "notes:x": '"eins"' }, stamps: { "notes:x": N + 5 }, deleted: {} }, T2 = { items: { "notes:x": '"zwei"' }, stamps: { "notes:x": N + 5 }, deleted: {} };
+  ok2(S.zusammenfuehren(T1, T2).items["notes:x"] === S.zusammenfuehren(T2, T1).items["notes:x"], "Gleichstand eindeutig");
+  // alte Grabsteine werden aufgeräumt
+  ok2(!("tasks:alt" in S.zusammenfuehren({ items: {}, stamps: {}, deleted: { "tasks:alt": 1 } }, leer).deleted), "alte Grabsteine weg");
+  ok2(/^([a-z2-9]{4}-){5}[a-z2-9]{4}$/.test(S.neuerCode()), "Code-Format");
+  console.log(f ? `${f} SYNC-FEHLER` : "SYNC-LOGIK OK");
+  if (f) process.exitCode = 1;
+}

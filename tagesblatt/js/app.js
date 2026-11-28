@@ -9,8 +9,9 @@ import { eventToICS } from "./ics.js";
 import { loadMedia, searchPodcasts, links } from "./media.js";
 import * as SP from "./spotify.js";
 import * as DA from "./data.js";
+import * as SY from "./sync.js";
 
-const VERSION = "1.1.0";
+const VERSION = "1.3.0";
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const D = () => store.data;
@@ -394,12 +395,53 @@ function viewSettings() {
       <form class="row" data-form="spotify"><input name="spotifyClientId" placeholder="Client-ID" value="${e(p.spotifyClientId)}" autocomplete="off"><button class="btn">OK</button></form>
       <p>${SP.isConnected() ? `<span class="pill ok">verbunden</span> <button class="btn sm ghost" data-act="spDisconnect">trennen</button>` : `<button class="btn sm" data-act="spConnect" ${p.spotifyClientId ? "" : "disabled"}>Mit Spotify verbinden</button>`}</p>`)}
     ${card("Apple Erinnerungen", `<p class="hint">Eine Web-App darf leider nicht auf Apple Erinnerungen zugreifen – das geht erst mit der späteren App-Store-Version. Bis dahin: Aufgaben direkt hier im Tagesplan eintragen oder „vormerken“. Mit <b>.ics</b> an Events kannst du Termine in den Apple-Kalender übernehmen.</p>`)}
-    ${card("Sichern & Umziehen", `<p class="hint">Alles liegt nur auf diesem Gerät. Mach ab und zu ein Backup (z. B. in iCloud Drive).</p>
+    ${card("Sync zwischen Geräten", syncHTML(), "span2")}
+    ${card("Sichern & Umziehen", `<p class="hint">${SY.aktiv() ? "Sync ist an – trotzdem schadet ein Backup ab und zu nicht." : "Ohne Sync liegt alles nur auf diesem Gerät. Mach ab und zu ein Backup (z. B. in iCloud Drive)."}</p>
       <div class="row"><button class="btn" data-act="export">Backup speichern</button><label class="btn ghost">Backup laden<input type="file" accept="application/json,.json" data-import hidden></label></div>
       <p><button class="btn sm ghost danger" data-act="reset">Alles zurücksetzen</button></p>
       <p class="hint">juten Tach! ${VERSION}</p>`)}
   </div>`;
 }
+
+/* =========================== Sync-Karte =========================== */
+function syncStatusHTML() {
+  const s = SY.status();
+  if (!s) return "";
+  if (s.laeuft) return `<span class="pill wait">gleiche ab …</span>`;
+  if (s.fehler) return `<span class="pill no">Fehler</span> <span class="hint">${e(s.fehler)}</span>`;
+  return s.last ? `<span class="pill ok">synchron</span> <span class="hint">zuletzt ${U.relDay(U.keyOf(new Date(s.last)))} ${U.fmtTime(new Date(s.last))}</span>` : `<span class="pill">noch nicht abgeglichen</span>`;
+}
+function syncHTML() {
+  if (SY.aktiv()) {
+    const s = SY.status();
+    return `<p data-sync-status>${syncStatusHTML()}</p>
+      <p class="hint">Notizen, Aufgaben, Projekte, Podcasts & Autor:innen, Events, Reihen, Kalender-Links und Einstellungen werden automatisch abgeglichen – beim Öffnen und kurz nach jeder Änderung.</p>
+      <div class="row"><button class="btn" data-act="syncNow">jetzt abgleichen</button><button class="btn ghost" data-act="syncOff">auf diesem Gerät trennen</button></div>
+      <details class="mini-details"><summary>Sync-Code für weitere Geräte zeigen</summary>
+        <p>Auf dem anderen Gerät: Einstellungen → Sync → „Mit Code verbinden“.</p>
+        <p><code class="copy synccode" data-act="copy" data-text="${e(s.code)}">${e(s.code)}</code></p>
+        <p class="hint">Wer den Code hat, kann deine Daten lesen und ändern – nicht weitergeben. Server: ${e(s.url)}</p>
+      </details>`;
+  }
+  return `<p class="hint">Damit deine Podcasts, Notizen, Projekte usw. auf allen Geräten gleich sind. Gespeichert wird auf deinem eigenen Webspace (<code>sync.php</code>), verschlüsselt – den Inhalt kann nur ein Gerät mit deinem Sync-Code lesen.</p>
+    <p class="hint"><b>iPhone:</b> Safari und die App auf dem Home-Bildschirm zählen als zwei Geräte – richte Sync am besten direkt in der Home-Bildschirm-App ein.</p>
+    <div class="row"><button class="btn" data-act="syncSetup">Sync einrichten (erstes Gerät)</button></div>
+    <form class="stack" data-form="syncJoin">
+      <label class="lbl">Schon eingerichtet? Code vom anderen Gerät <input name="code" placeholder="abcd-efgh-…" autocomplete="off" autocapitalize="off" spellcheck="false" required></label>
+      <label class="lbl">Was passiert mit den Daten auf diesem Gerät? <select name="modus">
+        <option value="ersetzen">ersetzen (neues Gerät)</option>
+        <option value="mischen">zusammenführen (beides behalten)</option></select></label>
+      <button class="btn">Mit Code verbinden</button>
+    </form>
+    <details class="mini-details"><summary>Server-Adresse (nur falls nötig)</summary>
+      <p class="hint">Standard: <code>${e(SY.standardUrl())}</code> – also <code>sync.php</code> im selben Ordner wie die App. Nur ausfüllen, wenn sie woanders liegt; gilt für „einrichten“ und „verbinden“.</p>
+      <input data-sync-url placeholder="${e(SY.standardUrl())}" autocomplete="off"></details>`;
+}
+SY.onChange((art) => {
+  if (art === "daten") { render(); return; }
+  const el = $("[data-sync-status]");
+  if (el) el.innerHTML = syncStatusHTML();
+});
 
 /* =========================== Router =========================== */
 const NAV = [["heute", "Heute"], ["kalender", "Kalender"], ["medien", "Medien"], ["projekte", "Projekte"], ["events", "Events"]];
@@ -505,10 +547,25 @@ const ACT = {
   spDisconnect: () => { SP.disconnect(); render(); },
   copy: (el) => { navigator.clipboard?.writeText(el.dataset.text).then(() => toast("Kopiert ✓"), () => toast("Bitte manuell kopieren")); },
   export: () => download(`juten-tach-backup-${U.todayKey()}.json`, store.exportJSON(), "application/json"),
-  reset: () => { if (confirm("Wirklich ALLES löschen (Notizen, Projekte, Feeds …)?")) { store.reset(); SP.disconnect(); render(); toast("Zurückgesetzt"); } },
+  reset: () => { if (confirm("Wirklich ALLES auf diesem Gerät löschen (Notizen, Projekte, Feeds …)?" + (SY.aktiv() ? "\n\nSync wird dabei getrennt – deine anderen Geräte behalten ihre Daten." : ""))) { SY.trennen(); store.reset(); SP.disconnect(); render(); toast("Zurückgesetzt"); } },
+  syncSetup: async () => {
+    const url = ($("[data-sync-url]")?.value || "").trim();
+    toast("Richte Sync ein …");
+    try { await SY.einrichten(url); render(); toast("Sync läuft ✓ – Code unten für weitere Geräte", 4000); }
+    catch (err) { toast("Sync nicht möglich: " + err.message, 6000); render(); }
+  },
+  syncNow: async () => { await SY.jetztSync(); const s = SY.status(); toast(s && s.fehler ? s.fehler : "Abgeglichen ✓"); },
+  syncOff: () => { if (confirm("Sync auf diesem Gerät trennen? Deine Daten bleiben hier und auf den anderen Geräten erhalten.")) { SY.trennen(); render(); toast("Sync getrennt"); } },
 };
 
 const FORMS = {
+  syncJoin: async (f, fd) => {
+    const modus = fd.get("modus");
+    if (modus === "ersetzen" && !confirm("Alle Daten auf diesem Gerät werden durch die synchronisierten ersetzt. Weiter?")) return;
+    toast("Verbinde …");
+    try { await SY.verbinden(fd.get("code"), modus, ($("[data-sync-url]")?.value || "").trim()); render(); toast("Verbunden ✓ – Daten sind da", 4000); }
+    catch (err) { toast(err.message, 6000); }
+  },
   addTask: (f, fd) => {
     const q = fd.get("q").trim(); if (!q) return;
     const { time, text } = DA.parseQuick(q);
@@ -634,5 +691,6 @@ setInterval(() => { if (renderedDay !== U.todayKey()) render(); }, 60000);
   route();
   if (spMsg) toast(spMsg, 4000);
   if (D().feeds.length) DA.loadFeeds().then(() => render()).catch(() => {});
+  SY.starteAuto();
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
 })();

@@ -25,6 +25,7 @@ Dann Dateien in `tagesblatt/` ändern und den Browser neu laden. Ein Build-Schri
 | `npm run dev` | lokaler Server, die App läuft unter localhost:8080 |
 | `http://localhost:8080/vorschau.html` | alle Tagesverläufe der nächsten Wochen nebeneinander, zum Feintunen der Farben |
 | `npm test` | Logik-Tests: Verläufe (Kontrast, jeder Tag anders) und Kalender-Import |
+| `npm run test:sync` | zwei Geräte gleichen über die echte `sync.php` ab (braucht PHP: `php -v`) |
 | `npm run test:browser` | klickt die ganze App im Browser durch und speichert Screenshots in `tests/screenshots/` |
 | `npm run zip` | packt `tagesblatt/` als `tagesblatt-upload.zip` zum Hochladen |
 
